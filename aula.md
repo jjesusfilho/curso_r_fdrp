@@ -4,6 +4,8 @@ Faculdade de Direito de Ribeirão Preto (FDRP/USP)
 
 Material da aula: https://github.com/jjesusfilho/curso_r_fdrp
 
+<img src="img/qrcode.png" alt="QR code do repositório" width="260">
+
 ---
 
 ## O que vamos fazer hoje
