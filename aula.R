@@ -55,7 +55,7 @@ acordaos |>
   ggplot(aes(x = n, y = reorder(orgao_julgador, n))) +
   geom_col() +
   facet_wrap(~ sistema, scales = "free_y") +
-  labs(x = "Acórdãos", y = NULL, title = "Dano moral por atraso de voo, TJSP, jan a set/2026")
+  labs(x = "Acórdãos", y = NULL, title = "Dano moral por atraso de voo, TJSP, setembro de 2026")
 
 # 4. Coleta ao vivo no TJSP (datas no formato dd/mm/aaaa) -----------------------
 
@@ -67,7 +67,7 @@ dir.create(pasta_esaj, showWarnings = FALSE)
 
 tjsp_baixar_cjsg(
   livre = "dano moral atraso voo",
-  inicio = "01/01/2026",
+  inicio = "01/09/2026",
   fim = "30/09/2026",
   n = 3,
   diretorio = pasta_esaj
@@ -81,7 +81,7 @@ dir.create(pasta_eproc, showWarnings = FALSE)
 
 tjsp_baixar_eproc2g_jurisprudencia(
   pesquisa = "dano moral atraso voo",
-  inicio = "01/01/2026",
+  inicio = "01/09/2026",
   fim = "30/09/2026",
   n = 6,
   diretorio = pasta_eproc

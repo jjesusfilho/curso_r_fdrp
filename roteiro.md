@@ -123,7 +123,7 @@ dir.create("esaj", showWarnings = FALSE)
 
 tjsp_baixar_cjsg(
   livre = "dano moral atraso voo",
-  inicio = "01/01/2026",
+  inicio = "01/09/2026",
   fim = "30/09/2026",
   n = 3,
   diretorio = "esaj"
@@ -136,7 +136,7 @@ dir.create("eproc", showWarnings = FALSE)
 
 tjsp_baixar_eproc2g_jurisprudencia(
   pesquisa = "dano moral atraso voo",
-  inicio = "01/01/2026",
+  inicio = "01/09/2026",
   fim = "30/09/2026",
   n = 6,
   diretorio = "eproc"
