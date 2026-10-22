@@ -25,18 +25,36 @@ datajud_tjsp <- search_processes(
 
 saveRDS(datajud_tjsp, "dados/datajud_tjsp.rds")
 
-# TJSP: acórdãos sobre dano moral por atraso de voo (60 decisões)
-pasta <- tempfile()
-dir.create(pasta)
+# TJSP, e-SAJ: acórdãos sobre dano moral por atraso de voo (60 decisões)
+pasta_esaj <- tempfile()
+dir.create(pasta_esaj)
 
 tjsp_baixar_cjsg(
   livre = "dano moral atraso voo",
-  inicio = "01/01/2025",
-  fim = "30/06/2025",
+  inicio = "01/01/2026",
+  fim = "30/09/2026",
   n = 3,
-  diretorio = pasta
+  diretorio = pasta_esaj
 )
 
-cjsg_voo <- tjsp_ler_cjsg(diretorio = pasta)
+esaj_voo <- tjsp_ler_cjsg(diretorio = pasta_esaj) |>
+  mutate(sistema = "e-SAJ")
 
-saveRDS(cjsg_voo, "dados/cjsg_voo.rds")
+saveRDS(esaj_voo, "dados/esaj_voo.rds")
+
+# TJSP, eproc: mesma pesquisa (60 decisões; o eproc traz 10 por página)
+pasta_eproc <- tempfile()
+dir.create(pasta_eproc)
+
+tjsp_baixar_eproc2g_jurisprudencia(
+  pesquisa = "dano moral atraso voo",
+  inicio = "01/01/2026",
+  fim = "30/09/2026",
+  n = 6,
+  diretorio = pasta_eproc
+)
+
+eproc_voo <- tjsp_ler_eproc_jurisprudencia(diretorio = pasta_eproc) |>
+  mutate(sistema = "eproc")
+
+saveRDS(eproc_voo, "dados/eproc_voo.rds")

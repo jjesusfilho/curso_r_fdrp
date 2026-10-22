@@ -20,46 +20,74 @@ penas[penas > 3]
 
 library(tidyverse)
 
-# 3. Dados reais: acórdãos do TJSP (plano B, sem internet) -----------------------
+# 3. Dados reais: acórdãos do TJSP nos dois sistemas (plano B, sem internet) -----
+# O TJSP tem dois sistemas: e-SAJ (processos antigos) e eproc (processos novos).
 # Se a coleta ao vivo falhar, use os arquivos prontos do repositório:
-# acordaos <- readRDS("dados/cjsg_voo.rds")
-# acordaos <- readRDS(url("https://raw.githubusercontent.com/jjesusfilho/curso_r_fdrp/main/dados/cjsg_voo.rds"))
+# esaj <- readRDS(url("https://raw.githubusercontent.com/jjesusfilho/curso_r_fdrp/main/dados/esaj_voo.rds"))
 
-acordaos <- readRDS("dados/cjsg_voo.rds")
+esaj <- readRDS("dados/esaj_voo.rds")
+eproc <- readRDS("dados/eproc_voo.rds")
 
-glimpse(acordaos)
+glimpse(esaj)
+glimpse(eproc)
+
+# Juntando os dois sistemas (colunas em comum)
+acordaos <- bind_rows(
+  select(esaj, sistema, processo, classe, orgao_julgador, relator, data_julgamento, ementa),
+  select(eproc, sistema, processo, classe, orgao_julgador, relator, data_julgamento, ementa)
+)
+
+acordaos |>
+  count(sistema)
 
 acordaos |>
   count(orgao_julgador, sort = TRUE)
 
 acordaos |>
   filter(str_detect(ementa, "(?i)dano moral")) |>
-  count(relator, sort = TRUE) |>
+  count(sistema, relator, sort = TRUE) |>
   head(5)
 
 acordaos |>
-  count(orgao_julgador) |>
-  slice_max(n, n = 8) |>
+  count(sistema, orgao_julgador) |>
+  group_by(sistema) |>
+  slice_max(n, n = 6) |>
   ggplot(aes(x = n, y = reorder(orgao_julgador, n))) +
   geom_col() +
-  labs(x = "Acórdãos", y = NULL, title = "Dano moral por atraso de voo, TJSP, 1º semestre de 2025")
+  facet_wrap(~ sistema, scales = "free_y") +
+  labs(x = "Acórdãos", y = NULL, title = "Dano moral por atraso de voo, TJSP, jan a set/2026")
 
 # 4. Coleta ao vivo no TJSP (datas no formato dd/mm/aaaa) -----------------------
 
 library(tjsp)
 
-pasta <- "cjsg"
-dir.create(pasta, showWarnings = FALSE)
+# e-SAJ: 20 acórdãos por página
+pasta_esaj <- "esaj"
+dir.create(pasta_esaj, showWarnings = FALSE)
 
 tjsp_baixar_cjsg(
   livre = "dano moral atraso voo",
-  inicio = "01/01/2025",
-  fim = "30/06/2025",
+  inicio = "01/01/2026",
+  fim = "30/09/2026",
   n = 3,
-  diretorio = pasta
+  diretorio = pasta_esaj
 )
 
-acordaos <- tjsp_ler_cjsg(diretorio = pasta)
+esaj <- tjsp_ler_cjsg(diretorio = pasta_esaj)
+
+# eproc: 10 acórdãos por página
+pasta_eproc <- "eproc"
+dir.create(pasta_eproc, showWarnings = FALSE)
+
+tjsp_baixar_eproc2g_jurisprudencia(
+  pesquisa = "dano moral atraso voo",
+  inicio = "01/01/2026",
+  fim = "30/09/2026",
+  n = 6,
+  diretorio = pasta_eproc
+)
+
+eproc <- tjsp_ler_eproc_jurisprudencia(diretorio = pasta_eproc)
 
 # 5. DataJud: metadados de processos ---------------------------------------------
 
